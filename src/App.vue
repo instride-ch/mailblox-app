@@ -1,18 +1,14 @@
 <template>
-  <MapboxGL/>
+  <Map/>
 </template>
 
 <script>
-import MapboxGL from './components/MapboxGL.vue'
+import Map from './components/Map.vue'
 
 export default {
   name: 'App',
   components: {
-    MapboxGL
+    Map
   }
 }
 </script>
-
-<style scoped>
-
-</style>
