@@ -6,10 +6,10 @@
 <script>
 import MapboxGL from 'mapbox-gl'
 import polylabel from '@mapbox/polylabel'
-import Modal from './Modal.vue'
+import Modal from '@/components/Modal'
 
 export default {
-  name: 'Map',
+  name: 'Mapbox',
 
   components: {
     Modal
@@ -62,10 +62,13 @@ export default {
         const selectedFeature = this.map.queryRenderedFeatures(bbox, {
           layers: ['buildings']
         })[0]
+        const centerOfBuilding = polylabel(selectedFeature.geometry.coordinates, 1.0)
+        centerOfBuilding[1] -= 0.00015 // manipulate longitude to center map correctly
+
         this.map.setFilter('buildings-highlighted', ['in', 'osm_id', selectedFeature.properties.osm_id])
         this.map.flyTo({
-          center: polylabel(selectedFeature.geometry.coordinates, 1.0),
-          zoom: 16
+          center: centerOfBuilding,
+          zoom: 18
         })
         this.$refs.modal.setIsOpen(true)
       })
@@ -97,6 +100,10 @@ export default {
   methods: {
     onModalClose () {
       this.map.setFilter('buildings-highlighted', ['in', 'osm_id', ''])
+    },
+
+    openAddressList () {
+      this.$router.push('/adressen')
     }
   }
 }
@@ -105,21 +112,6 @@ export default {
 <style scoped>
 #map {
   width: 100vw;
-  height: 100vh;
-}
-
-#info {
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  word-wrap: anywhere;
-  white-space: pre-wrap;
-  padding: 10px;
-  border: none;
-  border-radius: 3px;
-  font-size: 12px;
-  text-align: center;
-  color: #222;
-  background: #fff;
+  height: calc(100vh - 65px);
 }
 </style>
