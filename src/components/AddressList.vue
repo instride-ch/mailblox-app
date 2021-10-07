@@ -59,8 +59,8 @@ const directory = {
       id: 1,
       street: 'Ahornweg',
       houseNumber: '2',
-      city: 'Sursee',
-      zipCode: '6210',
+      city: undefined,
+      zipCode: undefined,
       country: 'CH',
       parties: 3
     },
@@ -336,7 +336,7 @@ export default {
 
   methods: {
     fullAddress (address) {
-      return `${address.street} ${address.houseNumber}, ${address.zipCode} ${address.city}`
+      return `${address.street || '{Strasse}'} ${address.houseNumber || '{Hausnummer}'}, ${address.zipCode || '{PLZ}'} ${address.city || '{Ortschaft}'}`
     }
   }
 }

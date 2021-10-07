@@ -1,5 +1,5 @@
 <template>
-  <AddressList/>
+  <address-list/>
 </template>
 
 <script>

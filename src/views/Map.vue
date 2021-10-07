@@ -1,5 +1,5 @@
 <template>
-  <Mapbox/>
+  <mapbox/>
 </template>
 
 <script>

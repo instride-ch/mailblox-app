@@ -5,8 +5,8 @@
         <div class="flex justify-between h-16">
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
-              <img class="block lg:hidden h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
-              <img class="hidden lg:block h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg" alt="Workflow" />
+              <img class="block lg:hidden h-8 w-auto" src="@/assets/mailblox-logo.svg" alt="Mailblox" />
+              <img class="hidden lg:block h-8 w-auto" src="@/assets/mailblox-logo-text.svg" alt="Mailblox" />
             </div>
             <div class="flex -my-px ml-6 space-x-8">
               <router-link
@@ -33,12 +33,17 @@
       </div>
     </Disclosure>
 
-    <router-view/>
+    <router-view v-slot="{ Component }">
+      <keep-alive include="Map">
+        <component :is="Component"/>
+      </keep-alive>
+    </router-view>
   </div>
 </template>
 
 <script>
 import { Disclosure } from '@headlessui/vue'
+import { KeepAlive } from 'vue'
 
 const navigation = [
   { name: 'Karte', href: '#', current: true },
@@ -47,7 +52,8 @@ const navigation = [
 
 export default {
   components: {
-    Disclosure
+    Disclosure,
+    KeepAlive
   },
   setup () {
     return {
