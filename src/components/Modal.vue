@@ -72,7 +72,7 @@ export default {
         return 'Keine eindeutige Adresse'
       }
 
-      return `${this.form.address.street} ${this.form.address.housenumber}`
+      return `${this.form.address.street} ${this.form.address.housenumber || ''}`
     }
   },
 
