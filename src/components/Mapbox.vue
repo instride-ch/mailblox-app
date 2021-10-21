@@ -26,14 +26,14 @@ export default {
     this.map.on('load', () => {
       this.map.addSource('buildings', {
         type: 'vector',
-        url: 'mapbox://wvision.bhrnw7t6'
+        url: 'mapbox://wvision.bd5gcv6m'
       })
 
       this.map.addLayer({
         id: 'buildings',
         type: 'fill',
         source: 'buildings',
-        'source-layer': 'buildings-sursee-5ttb04',
+        'source-layer': 'buildings-sursee-bthp8h',
         paint: {
           'fill-outline-color': 'rgba(0, 0, 0, 0.1)',
           'fill-color': 'rgba(0, 0, 0, 0.1)'
@@ -44,13 +44,13 @@ export default {
         id: 'buildings-highlighted',
         type: 'fill',
         source: 'buildings',
-        'source-layer': 'buildings-sursee-5ttb04',
+        'source-layer': 'buildings-sursee-bthp8h',
         paint: {
           'fill-outline-color': '#484896',
           'fill-color': '#6e599f',
           'fill-opacity': 0.75
         },
-        filter: ['in', '@id', '']
+        filter: ['in', 'osm_id', '']
       }, 'settlement-label')
 
       this.map.on('click', 'buildings', ({ point }) => {
@@ -61,15 +61,17 @@ export default {
         const building = this.map.queryRenderedFeatures(bbox, { layers: ['buildings'] })[0]
 
         this.fitCoordinates(building.geometry.coordinates[0])
-        this.map.setFilter('buildings-highlighted', ['in', '@id', building.properties['@id']])
+        this.map.setFilter('buildings-highlighted', ['in', 'osm_id', building.properties.osm_id])
 
-        this.$refs.modal.setAddress({
-          street: building.properties['addr:street'],
-          housenumber: building.properties['addr:housenumber'],
-          postcode: building.properties['addr:postcode'],
-          city: building.properties['addr:city']
-        })
-        this.$refs.modal.setIsOpen(true)
+        console.log(building.properties.osm_id)
+
+        // this.$refs.modal.setAddress({
+        //   street: building.properties['addr:street'],
+        //   housenumber: building.properties['addr:housenumber'],
+        //   postcode: building.properties['addr:postcode'],
+        //   city: building.properties['addr:city']
+        // })
+        // this.$refs.modal.setIsOpen(true)
       })
 
       this.map.on('mouseenter', 'buildings', () => {
@@ -98,7 +100,7 @@ export default {
 
   methods: {
     onModalClose () {
-      this.map.setFilter('buildings-highlighted', ['in', '@id', ''])
+      this.map.setFilter('buildings-highlighted', ['in', 'osm_id', ''])
     },
 
     fitCoordinates (coordinates) {

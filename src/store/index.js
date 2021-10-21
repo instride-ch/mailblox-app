@@ -1,17 +1,14 @@
 import { createStore } from 'vuex'
-import { upsert } from '@/helpers'
+import addresses from '@/store/modules/addresses'
+import buildings from '@/store/modules/buildings'
+import mutations from '@/store/mutations'
 
 export default createStore({
-  state: {
-    addresses: []
-  },
-  mutations: {
-    setAddresses (state, { address }) {
-      upsert(state.addresses, address)
-    }
-  },
-  actions: {
-  },
   modules: {
-  }
+    addresses,
+    buildings
+  },
+  state: {},
+  mutations,
+  actions: {}
 })
