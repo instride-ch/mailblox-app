@@ -38,7 +38,7 @@
                     {{ fullAddress(address) }}
                   </p>
                   <p class="text-sm text-gray-500 truncate">
-                    {{ address.party_count }} {{ address.party_count === 1 ? 'Partei' : 'Parteien' }}
+                    {{ address.party_quantity }} {{ address.party_quantity === 1 ? 'Partei' : 'Parteien' }}
                   </p>
                 </a>
               </div>

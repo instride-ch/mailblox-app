@@ -35,7 +35,9 @@
 import { reactive, ref } from 'vue'
 import { Dialog, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XIcon } from '@heroicons/vue/outline'
+// import { mapGetters } from 'vuex'
 import VueNumberInput from '@chenfengyuan/vue-number-input'
+import addresses from '@/store/modules/addresses'
 
 export default {
   components: {
@@ -67,12 +69,23 @@ export default {
   },
 
   computed: {
+    /* ...mapGetters([
+      'getStreet',
+      'getHouseNumber'
+    ]), */
+    getHouseNumber () {
+      return this.$store.getters['addresses/getHouseNumber']
+    },
+    getStreet () {
+      return this.$store.getters['addresses/getStreet']
+    },
+
     address () {
-      if (Object.values(this.form.address).every(item => item === undefined)) {
+      if (Object.values(addresses).every(item => item === undefined)) {
         return 'Keine eindeutige Adresse'
       }
 
-      return `${this.form.address.street} ${this.form.address.housenumber || ''}`
+      return `${this.getStreet} ${this.getHouseNumber || ''}` // mit dem funktionierts: addresses.state.items[18].street
     }
   },
 

@@ -1,3 +1,5 @@
+import { computed } from 'vue'
+
 export default {
   namespaced: true,
 
@@ -241,7 +243,14 @@ export default {
     itemsLoaded: false
   },
 
-  getters: {},
+  getters: {
+    getHouseNumber (state) {
+      return state.items.map(item => item.housenumber)
+    },
+    getStreet (state) {
+      return state.items.map(item => item.street)
+    }
+  },
 
   mutations: {},
 
