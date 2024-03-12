@@ -49,6 +49,12 @@ export default {
     VueNumberInput
   },
 
+  props: {
+    osm_id: {
+      type: Number
+    }
+  },
+
   setup () {
     const open = ref(false)
     const form = reactive({
@@ -74,18 +80,19 @@ export default {
       'getHouseNumber'
     ]), */
     getHouseNumber () {
-      return this.$store.getters['addresses/getHouseNumber']
+      return this.$store.getters['addresses/getHouseNumber'](this.osm_id)
     },
     getStreet () {
-      return this.$store.getters['addresses/getStreet']
+      console.log(this.$store.getters['addresses/getStreet'](this.osm_id))
+      return this.$store.getters['addresses/getStreet'](this.osm_id)
     },
 
     address () {
-      if (Object.values(addresses).every(item => item === undefined)) {
+      if (Object.values(addresses).every(item => item === undefined) || !this.getStreet || !this.getHouseNumber) {
         return 'Keine eindeutige Adresse'
       }
 
-      return `${this.getStreet} ${this.getHouseNumber || ''}` // mit dem funktionierts: addresses.state.items[18].street
+      return `${this.getStreet} ${this.getHouseNumber || ''}`
     }
   },
 

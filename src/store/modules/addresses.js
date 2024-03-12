@@ -174,7 +174,8 @@ export default {
         city: 'Sursee',
         postcode: '6210',
         country: 'CH',
-        party_quantity: 4
+        party_quantity: 4,
+        osm_id: 192543109
       },
       {
         id: 20,
@@ -244,11 +245,13 @@ export default {
   },
 
   getters: {
-    getHouseNumber (state) {
-      return state.items.map(item => item.housenumber)
+    getHouseNumber: state => osmId => {
+      const item = state.items.find(item => item.osm_id === osmId)
+      return item ? item.housenumber : ''
     },
-    getStreet (state) {
-      return state.items.map(item => item.street)
+    getStreet: state => osmId => {
+      const item = state.items.find(item => item.osm_id === osmId)
+      return item ? item.street : ''
     }
   },
 
