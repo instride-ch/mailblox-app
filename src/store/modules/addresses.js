@@ -1,5 +1,3 @@
-import { computed } from 'vue'
-
 export default {
   namespaced: true,
 
@@ -184,7 +182,8 @@ export default {
         city: 'Sursee',
         postcode: '6210',
         country: 'CH',
-        party_quantity: 5
+        party_quantity: 5,
+        osm_id: 192543137
       },
       {
         id: 21,
@@ -252,10 +251,24 @@ export default {
     getStreet: state => osmId => {
       const item = state.items.find(item => item.osm_id === osmId)
       return item ? item.street : ''
+    },
+    getParties: state => osmId => {
+      const item = state.items.find(item => item.osm_id === osmId)
+      return item ? item.party_quantity : 1
     }
   },
 
-  mutations: {},
-
-  actions: {}
+  actions: {
+    saveParties ({ commit, state }, payload) {
+      const itemIndex = state.items.findIndex(item => item.osm_id === payload.osm_id)
+      if (itemIndex !== -1) {
+        commit('editParties', { index: itemIndex, quantity: payload.quantity })
+      }
+    }
+  },
+  mutations: {
+    editParties (state, payload) {
+      state.items[payload.index].party_quantity = payload.quantity
+    }
+  }
 }

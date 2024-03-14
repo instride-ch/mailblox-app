@@ -1,10 +1,17 @@
-import building from '@/resources/building'
+// import building from '@/resources/building'
 
 export default {
   namespaced: true,
 
   state: {
-    items: [],
+    items: [
+      {
+        street: 'Sandgruebestrasse 4'
+      },
+      {
+        street: 'Sandgruebestrasse 2'
+      }
+    ],
     itemsLoaded: false
   },
 
@@ -13,7 +20,7 @@ export default {
   mutations: {},
 
   actions: {
-    fetchBuildings ({ commit, state }) {
+    /* fetchBuildings ({ commit, state }) {
       return new Promise((resolve) => {
         if (state.itemsLoaded) {
           resolve(state.items)
@@ -34,6 +41,6 @@ export default {
           })
         }
       })
-    }
+    } */
   }
 }

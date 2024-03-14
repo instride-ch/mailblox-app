@@ -16,7 +16,7 @@
               </DialogTitle>
               <div class="mt-2">
                 <label for="form-number-parties" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
-                <vue-number-input v-model="form.numberParties" :attrs="{ id: 'form-number-parties' }" :min="1" center controls/>
+                <vue-number-input v-model="editParties" :attrs="{ id: 'form-number-parties' }" :min="1" center controls/>
               </div>
             </div>
             <div class="mt-5 sm:mt-4">
@@ -33,9 +33,9 @@
 
 <script>
 import { reactive, ref } from 'vue'
+import { mapActions } from 'vuex'
 import { Dialog, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XIcon } from '@heroicons/vue/outline'
-// import { mapGetters } from 'vuex'
 import VueNumberInput from '@chenfengyuan/vue-number-input'
 import addresses from '@/store/modules/addresses'
 
@@ -75,16 +75,23 @@ export default {
   },
 
   computed: {
-    /* ...mapGetters([
-      'getStreet',
-      'getHouseNumber'
-    ]), */
     getHouseNumber () {
       return this.$store.getters['addresses/getHouseNumber'](this.osm_id)
     },
     getStreet () {
-      console.log(this.$store.getters['addresses/getStreet'](this.osm_id))
       return this.$store.getters['addresses/getStreet'](this.osm_id)
+    },
+    getParties () {
+      return this.$store.getters['addresses/getParties'](this.osm_id)
+    },
+
+    editParties: {
+      get () {
+        return this.getParties
+      },
+      set (value) {
+        this.updateParties({ osm_id: this.osm_id, quantity: value })
+      }
     },
 
     address () {
@@ -97,6 +104,10 @@ export default {
   },
 
   methods: {
+    ...mapActions(['addresses/saveParties']),
+    updateParties (value) {
+      this.$store.dispatch('addresses/saveParties', value)
+    },
     closeModal () {
       this.setIsOpen(false)
       this.$emit('close')

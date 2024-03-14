@@ -44,7 +44,6 @@
 <script>
 import { Disclosure } from '@headlessui/vue'
 import { KeepAlive } from 'vue'
-import { mapActions } from 'vuex'
 
 const navigation = [
   { name: 'Karte', href: '#', current: true },
@@ -61,14 +60,11 @@ export default {
     return {
       navigation
     }
-  },
-
-  methods: {
-    ...mapActions('buildings', ['fetchBuildings'])
-  },
-
-  async created () {
-    await this.fetchBuildings()
   }
+
+/*   async created () {
+    await this.fetchAddresses()
+    await this.fetchBuildings()
+  } */
 }
 </script>
