@@ -1,6 +1,8 @@
 # mailblox-app
 
 ## Project setup
+> [!IMPORTANT]
+> Use Node version 16
 ```
 yarn install
 ```
