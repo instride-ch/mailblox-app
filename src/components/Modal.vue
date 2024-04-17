@@ -16,7 +16,7 @@
               </DialogTitle>
               <div class="mt-2">
                 <label for="form-number-parties" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
-                <vue-number-input v-model="editParties" :attrs="{ id: 'form-number-parties' }" :min="1" center controls/>
+                <vue-number-input v-model="editParties" :attrs="{ id: 'form-number-parties' }" center controls/>
               </div>
             </div>
             <div class="mt-5 sm:mt-4">
@@ -37,7 +37,6 @@ import { mapActions } from 'vuex'
 import { Dialog, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XIcon } from '@heroicons/vue/outline'
 import VueNumberInput from '@chenfengyuan/vue-number-input'
-import addresses from '@/store/modules/addresses'
 
 export default {
   components: {
@@ -76,13 +75,13 @@ export default {
 
   computed: {
     getHouseNumber () {
-      return this.$store.getters['addresses/getHouseNumber'](this.osm_id)
+      return this.findObj().housenumber || false
     },
     getStreet () {
-      return this.$store.getters['addresses/getStreet'](this.osm_id)
+      return this.findObj().street || false
     },
     getParties () {
-      return this.$store.getters['addresses/getParties'](this.osm_id)
+      return this.findObj().party_quantity
     },
 
     editParties: {
@@ -95,18 +94,28 @@ export default {
     },
 
     address () {
-      if (Object.values(addresses).every(item => item === undefined) || !this.getStreet || !this.getHouseNumber) {
+      if (!this.getStreet || !this.getHouseNumber) {
         return 'Keine eindeutige Adresse'
       }
 
       return `${this.getStreet} ${this.getHouseNumber || ''}`
     }
   },
-
   methods: {
     ...mapActions(['addresses/saveParties']),
+    ...mapActions(['buildings/fetchBuildings']),
     updateParties (value) {
       this.$store.dispatch('addresses/saveParties', value)
+    },
+    findObj () {
+      console.log(this.$store.getters['addresses/getObject']((JSON.parse(localStorage.getItem('buildings')).find(this.findBuilding).addresses)[0]._key.path.segments[6]))
+      return this.$store.getters['addresses/getObject']((JSON.parse(localStorage.getItem('buildings')).find(this.findBuilding).addresses)[0]._key.path.segments[6])
+    },
+    findBuilding (building) {
+      return building.osm_id === this.osm_id
+    },
+    multipleAddresses () {
+      return (JSON.parse(localStorage.getItem('buildings')).find(this.findObj).addresses).length > 1
     },
     closeModal () {
       this.setIsOpen(false)

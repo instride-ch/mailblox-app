@@ -1,12 +1,13 @@
 <template>
   <div id="map"></div>
-  <modal ref="modal" :osm_id="this.osmId" @close="onModalClose"/>
+  <modal ref="modal"
+         :osm_id="this.osmId"
+         @close="onModalClose"/>
 </template>
 
 <script>
 import MapboxGL from 'mapbox-gl'
 import Modal from '@/components/Modal'
-import building from '@/resources/building'
 
 export default {
   name: 'Mapbox',
@@ -14,12 +15,6 @@ export default {
   data () {
     return {
       osmId: null
-    }
-  },
-
-  computed: {
-    building () {
-      return building
     }
   },
 
@@ -75,10 +70,7 @@ export default {
 
         this.fitCoordinates(building.geometry.coordinates[0])
         this.map.setFilter('buildings-highlighted', ['in', 'osm_id', building.properties.osm_id])
-
         this.osmId = parseInt(building.properties.osm_id)
-
-        console.log(this.osmId)
 
         this.$refs.modal.setAddress({
           street: building.properties['addr:street'],

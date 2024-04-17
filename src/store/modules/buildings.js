@@ -1,4 +1,4 @@
-// import building from '@/resources/building'
+import building from '@/resources/building'
 
 export default {
   namespaced: true,
@@ -20,7 +20,7 @@ export default {
   mutations: {},
 
   actions: {
-    /* fetchBuildings ({ commit, state }) {
+    fetchBuildings ({ commit, state }) {
       return new Promise((resolve) => {
         if (state.itemsLoaded) {
           resolve(state.items)
@@ -37,10 +37,11 @@ export default {
 
             commit('setItemsLoaded', { resource: 'buildings', status: true }, { root: true })
 
+            localStorage.setItem('buildings', JSON.stringify(buildings, null, 2))
             resolve(buildings)
           })
         }
       })
-    } */
+    }
   }
 }

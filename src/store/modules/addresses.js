@@ -1,3 +1,5 @@
+import address from '@/resources/address'
+
 export default {
   namespaced: true,
 
@@ -166,7 +168,7 @@ export default {
         party_quantity: 2
       },
       {
-        id: 19,
+        id: '09588bb8-bdda-4f0c-bacf-e3e723a6d626',
         street: 'Sandgruebestrasse',
         housenumber: '4',
         city: 'Sursee',
@@ -255,6 +257,10 @@ export default {
     getParties: state => osmId => {
       const item = state.items.find(item => item.osm_id === osmId)
       return item ? item.party_quantity : 1
+    },
+    getObject: state => id => {
+      const item = JSON.parse(localStorage.getItem('addresses')).find(item => item.id === id)
+      return item || 'nicht gefunden'
     }
   },
 
@@ -264,6 +270,30 @@ export default {
       if (itemIndex !== -1) {
         commit('editParties', { index: itemIndex, quantity: payload.quantity })
       }
+    },
+    fetchAddresses ({ commit, state }) {
+      return new Promise((resolve) => {
+        if (state.itemsLoaded) {
+          resolve(state.items)
+        } else {
+          address.fetch().then(snapshot => {
+            const addresses = snapshot.docs.map(doc => {
+              const item = { id: doc.id, ...doc.data() }
+              commit('setItem', { resource: 'addresses', item }, { root: true })
+              console.log(doc)
+              // TODO: commit addresses into store as well (via REF)
+
+              return item
+            })
+
+            commit('setItemsLoaded', { resource: 'addresses', status: true }, { root: true })
+
+            localStorage.setItem('addresses', JSON.stringify(addresses, null, 2))
+            console.log(addresses)
+            resolve(addresses)
+          })
+        }
+      })
     }
   },
   mutations: {

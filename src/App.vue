@@ -44,6 +44,8 @@
 <script>
 import { Disclosure } from '@headlessui/vue'
 import { KeepAlive } from 'vue'
+/* import buildings from '@/store/modules/buildings'
+import addresses from '@/store/modules/addresses' */
 
 const navigation = [
   { name: 'Karte', href: '#', current: true },
@@ -60,11 +62,11 @@ export default {
     return {
       navigation
     }
-  }
+  }/* ,
 
-/*   async created () {
-    await this.fetchAddresses()
-    await this.fetchBuildings()
+  async created ({ commit, state }) {
+    await addresses.fetchAddresses({ commit, state })
+    await buildings.fetchBuildings({ commit, state })
   } */
 }
 </script>
