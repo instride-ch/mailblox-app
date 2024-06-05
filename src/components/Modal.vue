@@ -32,12 +32,14 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { Dialog, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XIcon } from '@heroicons/vue/outline'
 import VueNumberInput from '@chenfengyuan/vue-number-input'
+import { useAddressesStore } from '@/stores/addresses'
+import { useBuildingsStore } from '@/stores/buildings'
 
-export default {
+export default defineComponent({
   components: {
     Dialog,
     DialogTitle,
@@ -48,6 +50,11 @@ export default {
   },
 
   setup () {
+    const { addressesStore } = useAddressesStore()
+    const { buildingsStore } = useBuildingsStore()
+
+    const addressItems = computed(() => addressesStore.items)
+    const buildingItems = computed(() => buildingsStore.items)
     const open = ref(false)
     const form = reactive({
       address: {},
@@ -57,6 +64,8 @@ export default {
     return {
       open,
       form,
+      addressItems,
+      buildingItems,
       setAddress (value) {
         form.address = value
       },
@@ -82,5 +91,5 @@ export default {
       this.$emit('close')
     }
   }
-}
+})
 </script>

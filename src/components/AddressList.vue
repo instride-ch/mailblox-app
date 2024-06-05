@@ -38,7 +38,7 @@
                     {{ fullAddress(address) }}
                   </p>
                   <p class="text-sm text-gray-500 truncate">
-                    {{ address.party_count }} {{ address.party_count === 1 ? 'Partei' : 'Parteien' }}
+                    {{ address.party_quantity }} {{ address.party_quantity === 1 ? 'Partei' : 'Parteien' }}
                   </p>
                 </a>
               </div>
@@ -52,9 +52,10 @@
 
 <script>
 import { HomeIcon, UsersIcon } from '@heroicons/vue/solid'
-import { mapState } from 'vuex'
+import { useAddressesStore } from '@/stores/addresses'
+import { computed, defineComponent, onMounted } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'AddressList',
 
   components: {
@@ -62,17 +63,23 @@ export default {
     UsersIcon
   },
 
-  computed: {
-    ...mapState('addresses', ['items']),
+  setup () {
+    const addressesStore = useAddressesStore()
 
-    addresses () {
-      if (!this.items) {
+    onMounted(async () => {
+      await addressesStore.fetchAddresses()
+    })
+
+    const items = computed(() => addressesStore.items)
+
+    const addresses = computed(() => {
+      if (!items.value) {
         return {}
       }
 
       const directory = {}
 
-      this.items.forEach(item => {
+      items.value.forEach(item => {
         const key = item.street.charAt(0)
 
         if (!(key in directory)) {
@@ -83,30 +90,29 @@ export default {
       })
 
       return directory
-    },
+    })
 
-    addressCount () {
-      return Object.values(this.addresses)
+    const addressCount = computed(() => {
+      return Object.values(addresses.value)
         .reduce((total, addresses) => total + addresses.length, 0)
-    },
+    })
 
-    partyCount () {
-      return Object.values(this.addresses)
+    const partyCount = computed(() => {
+      return Object.values(addresses.value)
         .reduce((total, addresses) => total + addresses
           .reduce((total, { party_quantity: quantity }) => total + quantity, 0), 0)
-    }
-  },
+    })
 
-  data () {
-    return {
-      directory: this.addresses
-    }
-  },
-
-  methods: {
-    fullAddress (address) {
+    const fullAddress = (address) => {
       return `${address.street || '{Strasse}'} ${address.housenumber || '{Hausnummer}'}, ${address.postcode || '{PLZ}'} ${address.city || '{Ortschaft}'}`
     }
+
+    return {
+      addresses,
+      addressCount,
+      partyCount,
+      fullAddress
+    }
   }
-}
+})
 </script>

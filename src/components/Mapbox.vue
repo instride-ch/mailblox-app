@@ -65,13 +65,13 @@ export default {
 
         console.log(building.properties.osm_id)
 
-        // this.$refs.modal.setAddress({
-        //   street: building.properties['addr:street'],
-        //   housenumber: building.properties['addr:housenumber'],
-        //   postcode: building.properties['addr:postcode'],
-        //   city: building.properties['addr:city']
-        // })
-        // this.$refs.modal.setIsOpen(true)
+        this.$refs.modal.setAddress({
+          street: building.properties['addr:street'],
+          housenumber: building.properties['addr:housenumber'],
+          postcode: building.properties['addr:postcode'],
+          city: building.properties['addr:city']
+        })
+        this.$refs.modal.setIsOpen(true)
       })
 
       this.map.on('mouseenter', 'buildings', () => {
