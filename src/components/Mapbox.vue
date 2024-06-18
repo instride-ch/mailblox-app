@@ -19,8 +19,20 @@ export default {
   setup () {
     const addressesStore = useAddressesStore()
     const buildingsStore = useBuildingsStore()
+    const buildingNoAddress = []
+    const buildingComplete = []
+    buildingsStore.getBuildings.forEach(building => {
+      if (building.addresses.length === 0) {
+        buildingNoAddress.push(building.osm_id.toString())
+      }
+      if (building.record_status === 'complete') {
+        buildingComplete.push(building.osm_id.toString())
+      }
+    })
 
     return {
+      buildingNoAddress,
+      buildingComplete,
       addressesStore,
       buildingsStore
     }
@@ -40,12 +52,6 @@ export default {
       zoom: 14
     })
 
-    for (const building of this.buildingsStore.getBuildings) {
-      console.log(building.record_status)
-    }
-    console.log(this.buildingsStore.getBuildings)
-    console.log(this.addressesStore.getAddresses)
-
     this.map.on('load', () => {
       this.map.addSource('buildings', {
         type: 'vector',
@@ -64,15 +70,27 @@ export default {
       }, 'settlement-label')
 
       this.map.addLayer({
+        id: 'buildings-no-address',
+        type: 'fill',
+        source: 'buildings',
+        'source-layer': 'buildings-sursee-bthp8h',
+        paint: {
+          'fill-outline-color': 'rgba(0, 0, 0, 0.1)',
+          'fill-color': 'rgba(255,0,0,0.1)'
+        },
+        filter: ['in', 'osm_id', '']
+      }, 'settlement-label')
+
+      this.map.addLayer({
         id: 'buildings-complete',
         type: 'fill',
         source: 'buildings',
         'source-layer': 'buildings-sursee-bthp8h',
         paint: {
-          'fill-outline-color': 'rgba(0,255,0,0.1)',
+          'fill-outline-color': 'rgba(0, 0, 0, 0.1)',
           'fill-color': 'rgba(0,255,0,0.1)'
         },
-        filter: ['==', ['get', 'record_status'], 'complete']
+        filter: ['in', 'osm_id', '']
       }, 'settlement-label')
 
       this.map.addLayer({
@@ -94,19 +112,24 @@ export default {
           [point.x, point.y]
         ]
         const building = this.map.queryRenderedFeatures(bbox, { layers: ['buildings'] })[0]
+        const foundBuilding = this.buildingsStore.getBuildingsByOsmId(parseInt(building.properties.osm_id))
 
-        this.fitCoordinates(building.geometry.coordinates[0])
-        this.map.setFilter('buildings-highlighted', ['in', 'osm_id', building.properties.osm_id])
+        if (foundBuilding.addresses.length !== 0) {
+          const currentAddress = this.addressesStore.getAddressesById(foundBuilding.addresses[0]._key.path.segments[6])
+          this.fitCoordinates(building.geometry.coordinates[0])
+          this.map.setFilter('buildings-highlighted', ['in', 'osm_id', building.properties.osm_id])
 
-        console.log(building.properties.osm_id)
+          console.log(currentAddress)
+          console.log(foundBuilding)
 
-        this.$refs.modal.setAddress({
-          street: building.properties['addr:street'],
-          housenumber: building.properties['addr:housenumber'],
-          postcode: building.properties['addr:postcode'],
-          city: building.properties['addr:city']
-        })
-        this.$refs.modal.setIsOpen(true)
+          this.$refs.modal.setAddress({
+            street: currentAddress.street,
+            housenumber: currentAddress.housenumber,
+            postcode: currentAddress.postcode,
+            city: currentAddress.city
+          })
+          this.$refs.modal.setIsOpen(true)
+        }
       })
 
       this.map.on('mouseenter', 'buildings', () => {
@@ -116,6 +139,9 @@ export default {
       this.map.on('mouseleave', 'buildings', () => {
         this.map.getCanvas().style.cursor = ''
       })
+
+      this.map.setFilter('buildings-no-address', ['in', 'osm_id', ...this.buildingNoAddress])
+      this.map.setFilter('buildings-complete', ['in', 'osm_id', ...this.buildingComplete])
     })
 
     this.map.addControl(

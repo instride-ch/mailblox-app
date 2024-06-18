@@ -12,6 +12,7 @@ export const useBuildingsStore = defineStore('buildings', {
 
   getters: {
     getBuildings: (state) => state.buildingItems,
+    getBuildingsByOsmId: (state) => (osmId) => state.buildingItems.find(building => building.osm_id === osmId),
     isBuildingsLoaded: (state) => state.buildingsLoaded
   },
 

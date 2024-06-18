@@ -12,6 +12,7 @@ export const useAddressesStore = defineStore('addresses', {
 
   getters: {
     getAddresses: (state) => state.addressItems,
+    getAddressesById: (state) => (id) => state.addressItems.find(address => address.id === id),
     getSortedAddresses: (state) => state.addressItems.sort((a, b) => a.street < b.street ? -1 : a.street > b.street ? 1 : 0),
     isAddressesLoaded: (state) => state.addressesLoaded
   },
