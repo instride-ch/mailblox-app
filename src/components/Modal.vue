@@ -12,11 +12,12 @@
             </div>
             <div class="sm:mt-0 sm:text-left">
               <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
-                {{ address }}
+                Adressen
               </DialogTitle>
-              <div class="mt-2">
-                <label for="form-number-parties" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
-                <vue-number-input v-model="form.numberParties" :attrs="{ id: 'form-number-parties' }" :min="1" center controls/>
+              <div class="mt-2" v-for="(address, index) in addresses" :key="index">
+                <p>{{ getAddressText(address) }}</p>
+                <label :for="'form-number-parties-' + index" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
+                <vue-number-input v-model="address.party_quantity" :attrs="{ id: 'form-number-parties-' + index }" :min="1" center controls/>
               </div>
             </div>
             <div class="mt-5 sm:mt-4">
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { Dialog, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XIcon } from '@heroicons/vue/outline'
 import VueNumberInput from '@chenfengyuan/vue-number-input'
@@ -56,32 +57,21 @@ export default defineComponent({
     const addressItems = computed(() => addressesStore.items)
     const buildingItems = computed(() => buildingsStore.items)
     const open = ref(false)
-    const form = reactive({
-      address: {},
-      numberParties: 1
-    })
 
     return {
       open,
-      form,
       addressItems,
       buildingItems,
-      setAddress (value) {
-        form.address = value
-      },
       setIsOpen (value) {
         open.value = value
       }
     }
   },
 
-  computed: {
-    address () {
-      if (Object.values(this.form.address).every(item => item === undefined)) {
-        return 'Keine eindeutige Adresse'
-      }
-
-      return `${this.form.address.street} ${this.form.address.housenumber || ''}`
+  props: {
+    addresses: {
+      type: Array,
+      required: true
     }
   },
 
@@ -89,6 +79,16 @@ export default defineComponent({
     closeModal () {
       this.setIsOpen(false)
       this.$emit('close')
+    },
+    saveModal () {
+      this.closeModal()
+      this.$emit('save')
+    },
+    getAddressText (address) {
+      if (!address.street && !address.housenumber) {
+        return 'Keine eindeutige Adresse'
+      }
+      return `${address.street} ${address.housenumber || ''}`
     }
   }
 })

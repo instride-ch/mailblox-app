@@ -1,6 +1,6 @@
 <template>
   <div id="map"></div>
-  <modal ref="modal" @close="onModalClose"/>
+  <modal ref="modal" :addresses="modalAddresses" @close="onModalClose" @save="onModalSave"/>
 </template>
 
 <script>
@@ -35,6 +35,12 @@ export default {
       buildingComplete,
       addressesStore,
       buildingsStore
+    }
+  },
+
+  data () {
+    return {
+      modalAddresses: []
     }
   },
 
@@ -115,19 +121,23 @@ export default {
         const foundBuilding = this.buildingsStore.getBuildingsByOsmId(parseInt(building.properties.osm_id))
 
         if (foundBuilding.addresses.length !== 0) {
-          const currentAddress = this.addressesStore.getAddressesById(foundBuilding.addresses[0]._key.path.segments[6])
           this.fitCoordinates(building.geometry.coordinates[0])
           this.map.setFilter('buildings-highlighted', ['in', 'osm_id', building.properties.osm_id])
 
-          console.log(currentAddress)
-          console.log(foundBuilding)
+          const allAddresses = []
 
-          this.$refs.modal.setAddress({
-            street: currentAddress.street,
-            housenumber: currentAddress.housenumber,
-            postcode: currentAddress.postcode,
-            city: currentAddress.city
-          })
+          for (const address of foundBuilding.addresses) {
+            const currentAddress = this.addressesStore.getAddressesById(address._key.path.segments[6])
+            allAddresses.push({
+              street: currentAddress.street,
+              housenumber: currentAddress.housenumber,
+              postcode: currentAddress.postcode,
+              city: currentAddress.city,
+              party_quantity: currentAddress.party_quantity
+            })
+          }
+
+          this.modalAddresses = allAddresses
           this.$refs.modal.setIsOpen(true)
         }
       })
@@ -162,6 +172,8 @@ export default {
   methods: {
     onModalClose () {
       this.map.setFilter('buildings-highlighted', ['in', 'osm_id', ''])
+    },
+    onModalSave () {
     },
 
     fitCoordinates (coordinates) {
