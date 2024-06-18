@@ -42,29 +42,11 @@
 </template>
 
 <script>
-import { onMounted } from 'vue'
 import { Disclosure } from '@headlessui/vue'
-import { useAddressesStore } from '@/stores/addresses'
-import { useBuildingsStore } from '@/stores/buildings'
 
 export default {
   components: {
     Disclosure
-  },
-
-  setup () {
-    const addressesStore = useAddressesStore()
-    const buildingsStore = useBuildingsStore()
-
-    onMounted(async () => {
-      await buildingsStore.fetchBuildings()
-      await addressesStore.fetchAddresses()
-    })
-
-    return {
-      addressesStore,
-      buildingsStore
-    }
   }
 }
 </script>

@@ -70,7 +70,7 @@ export default defineComponent({
       await addressesStore.fetchAddresses()
     })
 
-    const items = computed(() => addressesStore.items)
+    const items = computed(() => addressesStore.getSortedAddresses)
 
     const addresses = computed(() => {
       if (!items.value) {

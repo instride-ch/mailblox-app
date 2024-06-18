@@ -1,22 +1,25 @@
 import { defineStore } from 'pinia'
 import building from '@/resources/building'
+import { useLocalStorage } from '@vueuse/core'
 
 export const useBuildingsStore = defineStore('buildings', {
-  state: () => ({
-    items: [],
-    itemsLoaded: false
-  }),
+  state: () => {
+    return {
+      buildingItems: useLocalStorage('buildings', []),
+      buildingsLoaded: useLocalStorage('buildingsLoaded', false)
+    }
+  },
 
   getters: {
-    getBuildings: (state) => state.items,
-    isBuildingsLoaded: (state) => state.itemsLoaded
+    getBuildings: (state) => state.buildingItems,
+    isBuildingsLoaded: (state) => state.buildingsLoaded
   },
 
   actions: {
     fetchBuildings () {
       return new Promise((resolve, reject) => {
-        if (this.itemsLoaded) {
-          resolve(this.items)
+        if (this.buildingsLoaded) {
+          resolve(this.buildingItems)
         } else {
           building.fetch().then(snapshot => {
             const buildings = snapshot.docs.map(doc => ({
@@ -24,8 +27,8 @@ export const useBuildingsStore = defineStore('buildings', {
               ...doc.data()
             }))
 
-            this.items = buildings
-            this.itemsLoaded = true
+            this.buildingItems = buildings
+            this.buildingsLoaded = true
 
             resolve(buildings)
           }).catch(error => {

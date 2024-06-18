@@ -6,12 +6,29 @@
 <script>
 import MapboxGL from 'mapbox-gl'
 import Modal from '@/components/Modal'
+import { useAddressesStore } from '@/stores/addresses'
+import { useBuildingsStore } from '@/stores/buildings'
 
 export default {
   name: 'Mapbox',
 
   components: {
     Modal
+  },
+
+  setup () {
+    const addressesStore = useAddressesStore()
+    const buildingsStore = useBuildingsStore()
+
+    return {
+      addressesStore,
+      buildingsStore
+    }
+  },
+
+  beforeMount () {
+    this.addressesStore.fetchAddresses()
+    this.buildingsStore.fetchBuildings()
   },
 
   mounted () {
@@ -22,6 +39,12 @@ export default {
       center: [8.109, 47.174],
       zoom: 14
     })
+
+    for (const building of this.buildingsStore.getBuildings) {
+      console.log(building.record_status)
+    }
+    console.log(this.buildingsStore.getBuildings)
+    console.log(this.addressesStore.getAddresses)
 
     this.map.on('load', () => {
       this.map.addSource('buildings', {
@@ -38,6 +61,18 @@ export default {
           'fill-outline-color': 'rgba(0, 0, 0, 0.1)',
           'fill-color': 'rgba(0, 0, 0, 0.1)'
         }
+      }, 'settlement-label')
+
+      this.map.addLayer({
+        id: 'buildings-complete',
+        type: 'fill',
+        source: 'buildings',
+        'source-layer': 'buildings-sursee-bthp8h',
+        paint: {
+          'fill-outline-color': 'rgba(0,255,0,0.1)',
+          'fill-color': 'rgba(0,255,0,0.1)'
+        },
+        filter: ['==', ['get', 'record_status'], 'complete']
       }, 'settlement-label')
 
       this.map.addLayer({

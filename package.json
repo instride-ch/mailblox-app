@@ -11,6 +11,7 @@
     "@chenfengyuan/vue-number-input": "^2.0.0-rc",
     "@headlessui/vue": "^1.4.1",
     "@heroicons/vue": "^1.0.4",
+    "@vueuse/core": "^10.11.0",
     "core-js": "^3.6.5",
     "firebase": "^9.1.1",
     "firestore-export-import": "^0.17.0",
