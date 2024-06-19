@@ -5,9 +5,9 @@ export default {
   async fetch () {
     return await getDocs(collection(firestore, 'buildings'))
   },
-  async update (building) {
+  async update (building, status) {
     return await updateDoc(doc(firestore, 'buildings', building.id), {
-      record_status: 'complete'
+      record_status: status
     })
   }
 }

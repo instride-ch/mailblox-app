@@ -1,6 +1,6 @@
 <template>
   <div id="map"></div>
-  <Modal ref="modal" @close="onModalClose" />
+  <Modal ref="modal" @close="onModalClose" @save="updateFilter" />
 </template>
 
 <script>
@@ -152,7 +152,8 @@ export default {
               housenumber: currentAddress.housenumber,
               postcode: currentAddress.postcode,
               city: currentAddress.city,
-              party_quantity: currentAddress.party_quantity
+              party_quantity: currentAddress.party_quantity,
+              osm_id: currentAddress.osm_id
             })
           }
 
@@ -170,9 +171,7 @@ export default {
         this.map.getCanvas().style.cursor = ''
       })
 
-      this.map.setFilter('buildings-no-address', ['in', 'osm_id', ...this.buildingNoAddress])
-      this.map.setFilter('buildings-complete', ['in', 'osm_id', ...this.buildingComplete])
-      this.map.setFilter('buildings-partial', ['in', 'osm_id', ...this.buildingPartial])
+      this.updateFilter()
     })
 
     this.map.addControl(
@@ -193,6 +192,46 @@ export default {
   methods: {
     onModalClose () {
       this.map.setFilter('buildings-highlighted', ['in', 'osm_id', ''])
+    },
+
+    buildingNotDone () {
+      const index = this.buildingsStore.buildingItems.indexOf(this.buildingsStore.selectedBuilding)
+      this.buildingPartial.push(this.buildingsStore.selectedBuilding.osm_id.toString())
+      this.buildingComplete = this.buildingComplete.filter(item => item !== this.buildingsStore.selectedBuilding.osm_id.toString())
+      this.buildingsStore.buildingItems[index].record_status = 'partial'
+      this.updateFilter()
+    },
+
+    buildingDone () {
+      const index = this.buildingsStore.buildingItems.indexOf(this.buildingsStore.selectedBuilding)
+      this.buildingComplete.push(this.buildingsStore.selectedBuilding.osm_id.toString())
+      this.buildingPartial = this.buildingPartial.filter(item => item !== this.buildingsStore.selectedBuilding.osm_id.toString())
+      this.buildingsStore.buildingItems[index].record_status = 'complete'
+      this.updateFilter()
+    },
+    reset () {
+      const index = this.buildingsStore.buildingItems.indexOf(this.buildingsStore.selectedBuilding)
+      this.buildingComplete = this.buildingComplete.filter(item => item !== this.buildingsStore.selectedBuilding.osm_id.toString())
+      this.buildingPartial = this.buildingPartial.filter(item => item !== this.buildingsStore.selectedBuilding.osm_id.toString())
+      this.buildingsStore.buildingItems[index].record_status = 'empty'
+      this.updateFilter()
+    },
+
+    updateFilter (status) {
+      switch (status) {
+        case 'complete':
+          this.buildingDone()
+          break
+        case 'partial':
+          this.buildingNotDone()
+          break
+        case 'empty':
+          this.reset()
+          break
+      }
+      this.map.setFilter('buildings-no-address', ['in', 'osm_id', ...this.buildingNoAddress])
+      this.map.setFilter('buildings-complete', ['in', 'osm_id', ...this.buildingComplete])
+      this.map.setFilter('buildings-partial', ['in', 'osm_id', ...this.buildingPartial])
     },
 
     fitCoordinates (coordinates) {

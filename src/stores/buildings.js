@@ -39,8 +39,8 @@ export const useBuildingsStore = defineStore('buildings', {
         }
       })
     },
-    saveBuilding (currentBuilding) {
-      building.update(currentBuilding)
-    }
+    saveBuilding (currentBuilding, status) {
+      building.update(currentBuilding, status)
+    },
   }
 })

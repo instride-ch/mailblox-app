@@ -14,10 +14,16 @@
               <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
                 Adressen
               </DialogTitle>
-              <div class="mt-2" v-for="(address, index) in this.addressesStore.selectedAddresses" :key="index">
-                <p>{{ getAddressText(address) }}</p>
-                <label :for="'form-number-parties-' + index" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
-                <vue-number-input v-model="address.party_quantity" :attrs="{ id: 'form-number-parties-' + index }" :min="1" center controls/>
+              <div class="mt-2">
+                <ul>
+                  <li v-for="(address, index) in addressesStore.selectedAddresses" :key="index" class="cursor-pointer" @click="selectAddress(index)">
+                    <p>{{ getAddressText(address) }}</p>
+                    <div v-if="selectedIndex === index">
+                      <label :for="'form-number-parties-' + index" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
+                      <vue-number-input v-model="address.party_quantity" :attrs="{ id: 'form-number-parties-' + index }" :min="0" center controls/>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
             <div class="mt-5 sm:mt-4">
@@ -54,13 +60,18 @@ export default defineComponent({
     const addressesStore = useAddressesStore()
     const buildingsStore = useBuildingsStore()
     const open = ref(false)
+    const selectedIndex = ref(null)
 
     return {
       open,
       addressesStore,
       buildingsStore,
+      selectedIndex,
       setIsOpen (value) {
         open.value = value
+      },
+      selectAddress (index) {
+        selectedIndex.value = index
       }
     }
   },
@@ -71,9 +82,28 @@ export default defineComponent({
       this.$emit('close')
       this.addressesStore.selectedAddresses = null
       this.buildingsStore.selectedBuilding = null
+      this.selectedIndex = null
     },
     saveModal () {
-      this.buildingsStore.saveBuilding(this.buildingsStore.selectedBuilding)
+      let counter = 0
+      for (const address of this.addressesStore.selectedAddresses) {
+        const item = this.addressesStore.addressItems.find(item => item.id === address.id)
+        const index = this.addressesStore.addressItems.indexOf(item)
+        this.addressesStore.addressItems[index].party_quantity = address.party_quantity
+        if (address.party_quantity > 0) {
+          counter++
+        }
+      }
+      if (counter === this.addressesStore.selectedAddresses.length) {
+        this.buildingsStore.saveBuilding(this.buildingsStore.selectedBuilding, 'complete')
+        this.$emit('save', 'complete')
+      } else if (counter > 0) {
+        this.buildingsStore.saveBuilding(this.buildingsStore.selectedBuilding, 'partial')
+        this.$emit('save', 'partial')
+      } else {
+        this.buildingsStore.saveBuilding(this.buildingsStore.selectedBuilding, 'empty')
+        this.$emit('save', 'empty')
+      }
       this.addressesStore.saveAddress(this.addressesStore.selectedAddresses)
       this.closeModal()
     },
