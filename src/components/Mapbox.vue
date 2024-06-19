@@ -1,6 +1,6 @@
 <template>
   <div id="map"></div>
-  <modal ref="modal" :addresses="modalAddresses" @close="onModalClose" @save="onModalSave"/>
+  <Modal ref="modal" @close="onModalClose" />
 </template>
 
 <script>
@@ -21,6 +21,7 @@ export default {
     const buildingsStore = useBuildingsStore()
     const buildingNoAddress = []
     const buildingComplete = []
+    const buildingPartial = []
     buildingsStore.getBuildings.forEach(building => {
       if (building.addresses.length === 0) {
         buildingNoAddress.push(building.osm_id.toString())
@@ -28,11 +29,15 @@ export default {
       if (building.record_status === 'complete') {
         buildingComplete.push(building.osm_id.toString())
       }
+      if (building.record_status === 'partial') {
+        buildingPartial.push(building.osm_id.toString())
+      }
     })
 
     return {
       buildingNoAddress,
       buildingComplete,
+      buildingPartial,
       addressesStore,
       buildingsStore
     }
@@ -40,7 +45,8 @@ export default {
 
   data () {
     return {
-      modalAddresses: []
+      modalAddresses: [],
+      building: Object
     }
   },
 
@@ -100,6 +106,18 @@ export default {
       }, 'settlement-label')
 
       this.map.addLayer({
+        id: 'buildings-partial',
+        type: 'fill',
+        source: 'buildings',
+        'source-layer': 'buildings-sursee-bthp8h',
+        paint: {
+          'fill-outline-color': 'rgba(0, 0, 0, 0.1)',
+          'fill-color': 'rgba(255,255,0,0.1)'
+        },
+        filter: ['in', 'osm_id', '']
+      }, 'settlement-label')
+
+      this.map.addLayer({
         id: 'buildings-highlighted',
         type: 'fill',
         source: 'buildings',
@@ -129,6 +147,7 @@ export default {
           for (const address of foundBuilding.addresses) {
             const currentAddress = this.addressesStore.getAddressesById(address._key.path.segments[6])
             allAddresses.push({
+              id: currentAddress.id,
               street: currentAddress.street,
               housenumber: currentAddress.housenumber,
               postcode: currentAddress.postcode,
@@ -137,7 +156,8 @@ export default {
             })
           }
 
-          this.modalAddresses = allAddresses
+          this.addressesStore.selectedAddresses = allAddresses
+          this.buildingsStore.selectedBuilding = foundBuilding
           this.$refs.modal.setIsOpen(true)
         }
       })
@@ -152,6 +172,7 @@ export default {
 
       this.map.setFilter('buildings-no-address', ['in', 'osm_id', ...this.buildingNoAddress])
       this.map.setFilter('buildings-complete', ['in', 'osm_id', ...this.buildingComplete])
+      this.map.setFilter('buildings-partial', ['in', 'osm_id', ...this.buildingPartial])
     })
 
     this.map.addControl(
@@ -172,8 +193,6 @@ export default {
   methods: {
     onModalClose () {
       this.map.setFilter('buildings-highlighted', ['in', 'osm_id', ''])
-    },
-    onModalSave () {
     },
 
     fitCoordinates (coordinates) {

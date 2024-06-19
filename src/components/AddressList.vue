@@ -53,7 +53,7 @@
 <script>
 import { HomeIcon, UsersIcon } from '@heroicons/vue/solid'
 import { useAddressesStore } from '@/stores/addresses'
-import { computed, defineComponent, onMounted } from 'vue'
+import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'AddressList',
@@ -65,18 +65,11 @@ export default defineComponent({
 
   setup () {
     const addressesStore = useAddressesStore()
-
-    onMounted(async () => {
-      await addressesStore.fetchAddresses()
-    })
-
     const items = computed(() => addressesStore.getSortedAddresses)
-
     const addresses = computed(() => {
       if (!items.value) {
         return {}
       }
-
       const directory = {}
 
       items.value.forEach(item => {

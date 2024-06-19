@@ -6,7 +6,8 @@ export const useBuildingsStore = defineStore('buildings', {
   state: () => {
     return {
       buildingItems: useLocalStorage('buildings', []),
-      buildingsLoaded: useLocalStorage('buildingsLoaded', false)
+      buildingsLoaded: useLocalStorage('buildingsLoaded', false),
+      selectedBuilding: null
     }
   },
 
@@ -37,6 +38,9 @@ export const useBuildingsStore = defineStore('buildings', {
           })
         }
       })
+    },
+    saveBuilding (currentBuilding) {
+      building.update(currentBuilding)
     }
   }
 })

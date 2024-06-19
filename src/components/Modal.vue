@@ -14,14 +14,14 @@
               <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
                 Adressen
               </DialogTitle>
-              <div class="mt-2" v-for="(address, index) in addresses" :key="index">
+              <div class="mt-2" v-for="(address, index) in this.addressesStore.selectedAddresses" :key="index">
                 <p>{{ getAddressText(address) }}</p>
                 <label :for="'form-number-parties-' + index" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
                 <vue-number-input v-model="address.party_quantity" :attrs="{ id: 'form-number-parties-' + index }" :min="1" center controls/>
               </div>
             </div>
             <div class="mt-5 sm:mt-4">
-              <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click="closeModal">
+              <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click="saveModal">
                 Speichern
               </button>
             </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { Dialog, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XIcon } from '@heroicons/vue/outline'
 import VueNumberInput from '@chenfengyuan/vue-number-input'
@@ -51,27 +51,17 @@ export default defineComponent({
   },
 
   setup () {
-    const { addressesStore } = useAddressesStore()
-    const { buildingsStore } = useBuildingsStore()
-
-    const addressItems = computed(() => addressesStore.items)
-    const buildingItems = computed(() => buildingsStore.items)
+    const addressesStore = useAddressesStore()
+    const buildingsStore = useBuildingsStore()
     const open = ref(false)
 
     return {
       open,
-      addressItems,
-      buildingItems,
+      addressesStore,
+      buildingsStore,
       setIsOpen (value) {
         open.value = value
       }
-    }
-  },
-
-  props: {
-    addresses: {
-      type: Array,
-      required: true
     }
   },
 
@@ -79,15 +69,19 @@ export default defineComponent({
     closeModal () {
       this.setIsOpen(false)
       this.$emit('close')
+      this.addressesStore.selectedAddresses = null
+      this.buildingsStore.selectedBuilding = null
     },
     saveModal () {
+      this.buildingsStore.saveBuilding(this.buildingsStore.selectedBuilding)
+      this.addressesStore.saveAddress(this.addressesStore.selectedAddresses)
       this.closeModal()
-      this.$emit('save')
     },
     getAddressText (address) {
       if (!address.street && !address.housenumber) {
         return 'Keine eindeutige Adresse'
       }
+
       return `${address.street} ${address.housenumber || ''}`
     }
   }

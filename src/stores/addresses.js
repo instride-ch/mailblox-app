@@ -6,7 +6,8 @@ export const useAddressesStore = defineStore('addresses', {
   state: () => {
     return {
       addressItems: useLocalStorage('addresses', []),
-      addressesLoaded: useLocalStorage('addressesLoaded', false)
+      addressesLoaded: useLocalStorage('addressesLoaded', false),
+      selectedAddresses: null
     }
   },
 
@@ -38,6 +39,11 @@ export const useAddressesStore = defineStore('addresses', {
           })
         }
       })
+    },
+    saveAddress (addresses) {
+      for (const currentAddress of addresses) {
+        address.update(currentAddress)
+      }
     }
   }
 })
