@@ -18,7 +18,7 @@
                 <ul>
                   <li v-for="(address, index) in addressesStore.selectedAddresses" :key="index" class="cursor-pointer" @click="selectAddress(index)">
                     <p>{{ getAddressText(address) }}</p>
-                    <div v-if="selectedIndex === index">
+                    <div v-if="selectedIndex === index || addressesStore.selectedAddresses.length === 1">
                       <label :for="'form-number-parties-' + index" class="w-full text-gray-700 text-sm font-semibold">Anzahl Parteien</label>
                       <vue-number-input v-model="address.party_quantity" :attrs="{ id: 'form-number-parties-' + index }" :min="0" center controls/>
                     </div>
