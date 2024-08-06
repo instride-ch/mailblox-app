@@ -1,10 +1,12 @@
 import { createApp } from 'vue'
 import App from '@/App'
 import router from '@/router'
-import store from '@/store'
+import { createPinia } from 'pinia'
 import '@/assets/css/index.css'
 
 createApp(App)
-  .use(store)
   .use(router)
+  .use(createPinia())
   .mount('#app')
+
+// TODO: better Caching strategy

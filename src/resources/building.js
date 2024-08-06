@@ -1,8 +1,13 @@
 import firestore from '@/helpers/firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, doc, getDocs, updateDoc } from 'firebase/firestore'
 
 export default {
   async fetch () {
     return await getDocs(collection(firestore, 'buildings'))
+  },
+  async update (building, status) {
+    return await updateDoc(doc(firestore, 'buildings', building.id), {
+      record_status: status
+    })
   }
 }

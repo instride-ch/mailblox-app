@@ -11,14 +11,15 @@
     "@chenfengyuan/vue-number-input": "^2.0.0-rc",
     "@headlessui/vue": "^1.4.1",
     "@heroicons/vue": "^1.0.4",
+    "@vueuse/core": "^10.11.0",
     "core-js": "^3.6.5",
     "firebase": "^9.1.1",
     "firestore-export-import": "^0.17.0",
     "mapbox-gl": "^2.4.1",
+    "pinia": "2.0.14",
     "tailwindcss": "^2.2.15",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.3",
-    "vuex": "^4.0.0"
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

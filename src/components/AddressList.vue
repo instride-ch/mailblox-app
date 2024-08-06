@@ -52,9 +52,10 @@
 
 <script>
 import { HomeIcon, UsersIcon } from '@heroicons/vue/solid'
-import { mapState } from 'vuex'
+import { useAddressesStore } from '@/stores/addresses'
+import { computed, defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'AddressList',
 
   components: {
@@ -62,17 +63,16 @@ export default {
     UsersIcon
   },
 
-  computed: {
-    ...mapState('addresses', ['items']),
-
-    addresses () {
-      if (!this.items) {
+  setup () {
+    const addressesStore = useAddressesStore()
+    const items = computed(() => addressesStore.getSortedAddresses)
+    const addresses = computed(() => {
+      if (!items.value) {
         return {}
       }
-
       const directory = {}
 
-      this.items.forEach(item => {
+      items.value.forEach(item => {
         const key = item.street.charAt(0)
 
         if (!(key in directory)) {
@@ -83,30 +83,29 @@ export default {
       })
 
       return directory
-    },
+    })
 
-    addressCount () {
-      return Object.values(this.addresses)
+    const addressCount = computed(() => {
+      return Object.values(addresses.value)
         .reduce((total, addresses) => total + addresses.length, 0)
-    },
+    })
 
-    partyCount () {
-      return Object.values(this.addresses)
+    const partyCount = computed(() => {
+      return Object.values(addresses.value)
         .reduce((total, addresses) => total + addresses
           .reduce((total, { party_quantity: quantity }) => total + quantity, 0), 0)
-    }
-  },
+    })
 
-  data () {
-    return {
-      directory: this.addresses
-    }
-  },
-
-  methods: {
-    fullAddress (address) {
+    const fullAddress = (address) => {
       return `${address.street || '{Strasse}'} ${address.housenumber || '{Hausnummer}'}, ${address.postcode || '{PLZ}'} ${address.city || '{Ortschaft}'}`
     }
+
+    return {
+      addresses,
+      addressCount,
+      partyCount,
+      fullAddress
+    }
   }
-}
+})
 </script>

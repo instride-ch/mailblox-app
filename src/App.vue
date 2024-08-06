@@ -43,30 +43,10 @@
 
 <script>
 import { Disclosure } from '@headlessui/vue'
-import { KeepAlive } from 'vue'
-/* import buildings from '@/store/modules/buildings'
-import addresses from '@/store/modules/addresses' */
-
-const navigation = [
-  { name: 'Karte', href: '#', current: true },
-  { name: 'Adressen', href: '#', current: false }
-]
 
 export default {
   components: {
-    Disclosure,
-    KeepAlive
-  },
-
-  setup () {
-    return {
-      navigation
-    }
-  }/* ,
-
-  async created ({ commit, state }) {
-    await addresses.fetchAddresses({ commit, state })
-    await buildings.fetchBuildings({ commit, state })
-  } */
+    Disclosure
+  }
 }
 </script>
