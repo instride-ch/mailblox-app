@@ -1,4 +1,5 @@
 # mailblox-app
+![Github Action](https://github.com/github/docs/actions/workflows/deployment.yml/badge.svg)
 
 ## Project setup
 > [!IMPORTANT]
