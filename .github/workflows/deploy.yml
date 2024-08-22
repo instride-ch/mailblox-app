@@ -18,6 +18,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+    
+    - name: use NVM 16
+      run: nvm use 16
 
     - name: Install dependencies
       run: yarn install
