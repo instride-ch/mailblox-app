@@ -1,3 +1,4 @@
+[![Deployment](https://github.com/instride-ch/mailblox-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/instride-ch/mailblox-app/actions/workflows/deploy.yml)
 # mailblox-app
 
 ## Project setup
