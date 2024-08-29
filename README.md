@@ -3,7 +3,7 @@
 
 ## Project setup
 > [!IMPORTANT]
-> Use Node version 16
+> Use Node version 18 or higher
 ```
 yarn install
 ```
