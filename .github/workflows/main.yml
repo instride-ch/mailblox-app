@@ -1,0 +1,53 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: production
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Create .env file
+      run: |
+        echo VUE_APP_MAPBOX_TOKEN=${{ secrets.VUE_APP_MAPBOX_TOKEN }} >> .env
+        echo VUE_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.VUE_APP_FIREBASE_AUTH_DOMAIN }} >> .env
+        echo VUE_APP_FIREBASE_PROJECT_ID=${{ secrets.VUE_APP_FIREBASE_PROJECT_ID }} >> .env
+        echo VUE_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.VUE_APP_FIREBASE_STORAGE_BUCKET }} >> .env
+        echo VUE_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VUE_APP_FIREBASE_MESSAGING_SENDER_ID }} >> .env
+        echo VUE_APP_FIREBASE_APP_ID=${{ secrets.VUE_APP_FIREBASE_APP_ID }} >> .env
+        echo VUE_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.VUE_APP_FIREBASE_MEASUREMENT_ID }} >> .env
+        echo VUE_APP_FIREBASE_API_KEY=${{ secrets.VUE_APP_FIREBASE_API_KEY }} >> .env
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Update firebase.js
+      run: |
+        sed -i 's|apiKey:.*|apiKey: process.env.VUE_APP_FIREBASE_API_KEY,|' src/config/firebase.js
+        sed -i 's|authDomain:.*|authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,|' src/config/firebase.js
+        sed -i 's|projectId:.*|projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,|' src/config/firebase.js
+        sed -i 's|storageBucket:.*|storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,|' src/config/firebase.js
+        sed -i 's|messagingSenderId:.*|messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,|' src/config/firebase.js
+        sed -i 's|appId:.*|appId: process.env.VUE_APP_FIREBASE_APP_ID,|' src/config/firebase.js
+        sed -i 's|measurementId:.*|measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID|' src/config/firebase.js
+
+    - name: Build project
+      run: yarn build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
