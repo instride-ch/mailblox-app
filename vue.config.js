@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/Mailblox/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/mailblox-app/" : "/",
 };
