@@ -1,4 +1,3 @@
-[![Deployment](https://github.com/Simon-Drohsen/Mailblox/actions/workflows/deployment.yml/badge.svg?branch=main)](https://github.com/Simon-Drohsen/Mailblox/actions/workflows/deployment.yml)
 # mailblox-app
 
 ## Project setup
