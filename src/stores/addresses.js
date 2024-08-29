@@ -30,6 +30,8 @@ export const useAddressesStore = defineStore('addresses', {
               ...doc.data()
             }))
 
+            console.log('Addresses Loaded', addresses)
+
             this.addressItems = addresses
             this.addressesLoaded = true
 
