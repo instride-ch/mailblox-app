@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'e50a9c6ff66001e90f688ec55e514d2ad4c0e3c5',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '401de7f6a3c4cd9975c266a413a1172ff286284c',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,22 +11,13 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'e50a9c6ff66001e90f688ec55e514d2ad4c0e3c5',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '401de7f6a3c4cd9975c266a413a1172ff286284c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
-        ),
-        'deployer/deployer' => array(
-            'pretty_version' => 'v7.4.0',
-            'version' => '7.4.0.0',
-            'reference' => 'b438dc22545ab2ecc67d79c80c7a79c156de3599',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../deployer/deployer',
-            'aliases' => array(),
-            'dev_requirement' => true,
         ),
     ),
 );

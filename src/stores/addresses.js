@@ -23,6 +23,7 @@ export const useAddressesStore = defineStore('addresses', {
       return new Promise((resolve, reject) => {
         if (this.addressesLoaded) {
           resolve(this.addressItems)
+          console.log('Addresses already loaded')
         } else {
           address.fetch().then(snapshot => {
             const addresses = snapshot.docs.map(doc => ({
@@ -30,7 +31,7 @@ export const useAddressesStore = defineStore('addresses', {
               ...doc.data()
             }))
 
-            console.log('Addresses Loaded', addresses)
+            console.log('Addresses already loaded')
 
             this.addressItems = addresses
             this.addressesLoaded = true

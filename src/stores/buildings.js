@@ -25,13 +25,10 @@ export const useBuildingsStore = defineStore('buildings', {
         } else {
           console.log('Fetching buildings')
           building.fetch().then(snapshot => {
-            console.log(snapshot)
             const buildings = snapshot.docs.map(doc => ({
               id: doc.id,
               ...doc.data()
             }))
-
-            console.log('buildings loaded', buildings)
 
             this.buildingItems = buildings
             this.buildingsLoaded = true
