@@ -1,6 +1,5 @@
 <template>
   <div id="map"></div>
-  <button @click="updateData">Update</button>
   <Modal ref="modal" @close="onModalClose" @save="updateFilter" />
 </template>
 
@@ -193,20 +192,6 @@ export default {
   methods: {
     onModalClose () {
       this.map.setFilter('buildings-highlighted', ['in', 'osm_id', ''])
-    },
-
-    updateData () {
-      localStorage.clear()
-      setTimeout(() => {
-        this.addressesStore.fetchAddresses()
-        this.buildingsStore.fetchBuildings()
-        console.log(this.addressesStore)
-        console.log(this.buildingsStore)
-        setTimeout(() => {
-          // eslint-disable-next-line no-self-assign
-          location.href = location.href
-        }, 1000)
-      }, 1000)
     },
 
     buildingNotDone () {

@@ -29,6 +29,7 @@
               </router-link>
             </div>
           </div>
+          <button class="relative flex items-center justify-items-end" @click="updateData">Update</button>
         </div>
       </div>
     </Disclosure>
@@ -47,6 +48,22 @@ import { Disclosure } from '@headlessui/vue'
 export default {
   components: {
     Disclosure
+  },
+
+  methods: {
+    updateData () {
+      localStorage.clear()
+      this.addressesStore.addressItems = []
+      this.addressesStore.addressesLoaded = false
+      this.buildingsStore.buildingItems = []
+      this.buildingsStore.buildingsLoaded = false
+      this.addressesStore.fetchAddresses()
+      this.buildingsStore.fetchBuildings()
+      setTimeout(() => {
+        // eslint-disable-next-line no-self-assign
+        location.href = location.href
+      }, 1000)
+    }
   }
 }
 </script>
