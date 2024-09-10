@@ -44,10 +44,21 @@
 
 <script>
 import { Disclosure } from '@headlessui/vue'
-
+import { useAddressesStore } from '@/stores/addresses'
+import { useBuildingsStore } from '@/stores/buildings'
 export default {
   components: {
     Disclosure
+  },
+
+  setup () {
+    const addressesStore = useAddressesStore()
+    const buildingsStore = useBuildingsStore()
+
+    return {
+      addressesStore,
+      buildingsStore
+    }
   },
 
   methods: {
